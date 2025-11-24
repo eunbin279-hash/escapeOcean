@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="./src/style.css">
+    <title>꼬르륵, 물 밖으로 나가고 싶어</title>
+</head>
+
+<body>
+    <div id="game-container">
+
+        <div id="background-area">
+            <div id="ocean-scroll"></div>
+        </div>
+
+        <div id="ui-overlay">
+            <div id="survival-gauge-wrapper">
+                <span class="label">산소 버블</span>
+                <div id="survival-gauge">
+                    <div id="survival-fill"></div>
+                </div>
+            </div>
+
+            <div id="altitude-display">
+                <span class="label">고도: </span>
+                <span id="altitude-value">0 m</span>
+            </div>
+        </div>
+        <div id="click-area">
+            <div id="click-count-display">
+                <span class="label">클릭 횟수: </span>
+                <span id="click-count-value">0</span>
+            </div><br><br>
+            <span id="timer-value"></span>
+        </div>
+        <div id="character-area">
+            <div id="player-character"></div>
+        </div>
+
+        <div id="game-end-screen" class="hidden">
+            <h2 id="end-message">게임 오버!</h2>
+            <p id="final-score">최종 고도: 0 m</p>
+            <button id="restart-button">다시 시작하기</button>
+
+            <div id="name-input-section">
+                <input type="text" id="player-name" placeholder="이름을 입력하세요">
+                <button id="submit-name">기록 남기기</button>
+            </div>
+        </div>
+
+        <div id="item-spawn-area">
+        </div>
+
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
