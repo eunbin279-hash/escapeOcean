@@ -1,4 +1,6 @@
 
+ClickBattle.init("ian");
+
 
 // === 상태 변수 ===
 let isGameRunning = false;
@@ -9,7 +11,7 @@ let clickCount = 0;
 // === 상수 ===
 const MAX_TIME = 20;
 const CLICK_ASCENT_RATE = 50;
-const FIXED_MAX_DEPTH = 14998; // 항상 10984m에서 시작 (사용자 요청)
+const FIXED_MAX_DEPTH = 10984; // 항상 10984m에서 시작 (사용자 요청)
 let MAX_GAME_HEIGHT = 10984;   // 픽셀 단위 스크롤 가능 거리(초기값 placeholder)
 
 // === 아이템 데이터 ===
@@ -126,6 +128,9 @@ function handleAscent(event) {
 
     scrollPosition += CLICK_ASCENT_RATE;
 
+
+    ClickBattle.recordClick();
+
     if (scrollPosition >= MAX_GAME_HEIGHT) {
         scrollPosition = MAX_GAME_HEIGHT;
         if (isGameRunning) {
@@ -136,11 +141,6 @@ function handleAscent(event) {
 
     if (oceanScroll) updateBackgroundScroll();
     updateUI();
-
-    // 외부 ClickBattle 로깅이 필요하면 여기서 안전 호출 (이미 초기화 되어 있다면)
-    if (typeof ClickBattle !== 'undefined' && typeof ClickBattle.recordClick === 'function') {
-        try { ClickBattle.recordClick(); } catch (e) { console.warn('ClickBattle.recordClick() 오류:', e); }
-    }
 
     event && event.stopPropagation && event.stopPropagation();
 }
@@ -302,6 +302,4 @@ function saveScore(newScore) {
 
 
 
-ClickBattle.init("ian");
 
-ClickBattle.recordClick();
