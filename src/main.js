@@ -8,8 +8,8 @@ let clickCount = 0;
 
 // === 상수 ===
 const MAX_TIME = 20;
-const CLICK_ASCENT_RATE = 20;
-const FIXED_MAX_DEPTH = 10984; // 항상 10984m에서 시작 (사용자 요청)
+const CLICK_ASCENT_RATE = 50;
+const FIXED_MAX_DEPTH = 14998; // 항상 10984m에서 시작 (사용자 요청)
 let MAX_GAME_HEIGHT = 10984;   // 픽셀 단위 스크롤 가능 거리(초기값 placeholder)
 
 // === 아이템 데이터 ===
