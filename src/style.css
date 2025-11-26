@@ -16,6 +16,7 @@ body {
 
     /* 모바일 브라우저의 탄성 스크롤(바운스) 효과를 억제 */
     overscroll-behavior-y: contain;
+    touch-action: manipulation;
 }
 
 body {
@@ -213,4 +214,54 @@ button {
     z-index: 20;
     /* 이 영역이 터치 이벤트를 받아야 합니다. */
     pointer-events: none;
+}
+
+
+
+/* 아이템 스타일 */
+
+
+.game-item.oxygen-pouch {
+    background-image: url('../assets/oxy-tank.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.game-item.booster {
+    background-image: url('../assets/booster.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.game-item.lucky-star {
+    background-image: url('../assets/lucky-star.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.game-item {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    animation: itemBounce 0.8s ease-in-out infinite alternate;
+    pointer-events: auto;
+}
+
+@keyframes itemBounce {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.25);
+    }
+}
+
+
+/* 명예의 전당 스타일 */
+.player-name {
+    color: yellow;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 0 0 2px black;
 }
