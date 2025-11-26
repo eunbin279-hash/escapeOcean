@@ -201,6 +201,8 @@ function triggerHiddenEnding() {
         // 2.5초 뒤 히든 엔딩 메시지
         setTimeout(() => {
             if (endMessage) {
+                if (gameEndScreen) gameEndScreen.classList.remove('hidden');
+
                 endMessage.textContent = "✨ HIDDEN ENDING! 바다 위 세상에 도달했습니다! ✨";
                 endMessage.style.opacity = '1'; // fade-in 유지
                 endMessage.style.display = 'block';
@@ -224,7 +226,6 @@ if (submitNameButton) {
         saveScoreFirebase(name, score);
 
         // 화면 표시
-        displayPlayerName(name, score);
 
         // 입력창 숨기기
         playerNameInput.value = '';
@@ -377,3 +378,11 @@ if (submitNameButton) {
 
 
 
+document.body.style.overflow = "hidden";
+
+document.addEventListener(
+    "touchmove",
+    function (e) {
+        e.preventDefault();
+    },
+    { passive: false });
