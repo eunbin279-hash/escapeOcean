@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="./src/style.css">
+    <script src="https://clickbattle2025.web.app/click-battle.js"></script>
+    <script>ClickBattle.init("ian");</script>
+    <title>🏅명예의 전당🏅</title>
+    <style>
+        body {
+
+            font-family: 'Mabiyet', sans-serif;
+            background: #28a1d1;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #eaf4ff;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #99d7e2;
+        }
+
+        a.back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #034c94;
+            font-weight: bold;
+        }
+
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>명예의 전당</h1>
+    <table id="score-table">
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>이름</th>
+                <th>점수</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <a href="index.html" class="back-link">게임으로 돌아가기</a>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyA76Bhz4t6DiQG04GipuNIQcJ-zOn2pYrk",
+            authDomain: "escapeocean-b0156.firebaseapp.com",
+            databaseURL: "https://escapeocean-b0156-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "escapeocean-b0156",
+            storageBucket: "escapeocean-b0156.appspot.com",
+            messagingSenderId: "490435285158",
+            appId: "1:490435285158:web:c69fef4b33bca5479ee467"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const tableBody = document.querySelector("#score-table tbody");
+        const scoresRef = ref(db, 'scores');
+
+        // 실시간 명예의 전당
+        onValue(scoresRef, snapshot => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const entries = Object.values(data)
+                .sort((a, b) => b.score - a.score);
+
+            tableBody.innerHTML = '';
+
+            entries.forEach((entry, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx + 1}</td><td>${entry.name}</td><td>${entry.score}</td>`;
+                tableBody.appendChild(tr);
+            });
+        });
+    </script>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>

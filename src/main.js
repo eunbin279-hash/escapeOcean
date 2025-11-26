@@ -117,7 +117,7 @@ function gameLoop() {
     gameTimer--;
     if (gameTimer <= 0) {
         gameTimer = 0;
-        gameOver("시간 초과! 산소가 모두 소진되었습니다.");
+        gameOver("시간 초과! \n 산소가 모두 소진되었습니다...");
     }
     updateUI();
 }
@@ -246,7 +246,7 @@ function gameOver(message, isWin = false) {
     // 일반 종료
     if (endMessage) endMessage.textContent = message;
     if (finalScore) {
-        let finalAltitude = -Math.round(scrollPosition / MAX_GAME_HEIGHT * FIXED_MAX_DEPTH);
+        let finalAltitude = Math.round(-FIXED_MAX_DEPTH + (scrollPosition / MAX_GAME_HEIGHT) * FIXED_MAX_DEPTH);
         finalScore.textContent = `최종 고도: ${finalAltitude} m / 클릭: ${clickCount.toLocaleString()}회`;
     }
     if (nameInputSection) nameInputSection.style.display = 'block';
@@ -324,6 +324,8 @@ function saveScoreFirebase(name, score) {
     set(newScoreRef, { name, score, timestamp: Date.now() });
 }
 
+
+/*
 // --- 화면 표시 ---
 function displayPlayerName(name, score) {
     if (playerElements[name]) return;
@@ -335,10 +337,9 @@ function displayPlayerName(name, score) {
     oceanScroll.appendChild(el);
     playerElements[name] = el;
 
-    const bottomPercentage = (1 - (score / FIXED_MAX_DEPTH)) * 100;
-    const bottomPixels = Math.round(score * 1); // 1미터당 1픽셀 매핑 가정
-    // 0m 아래로 내려가지 않도록 0% 이상으로 제한
-    // bottomPercentage는 이제 oceanScroll의 10984px 높이에 대한 상대 위치가 됩니다.
+    const scrollHeight = oceanScroll.scrollHeight; // 실제 이미지 높이
+    const bottomPixels = Math.round((score / FIXED_MAX_DEPTH) * scrollHeight);
+
     el.style.bottom = `${bottomPixels}px`;
 
 }
@@ -352,7 +353,7 @@ onValue(scoresRef, snapshot => {
     entries.forEach(entry => displayPlayerName(entry.name, entry.score));
 });
 
-
+*/
 
 if (submitNameButton) {
     submitNameButton.addEventListener('click', () => {

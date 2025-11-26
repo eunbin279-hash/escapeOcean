@@ -211,13 +211,27 @@ body {
 
 h2 {
     font-size: 2em;
+    letter-spacing: -0.5px;
+    padding: 0 20px;
+    text-align: center;
+
+
 }
 
 button {
+
     padding: 10px 20px;
     margin-top: 15px;
     font-size: 1.1em;
     cursor: pointer;
+    font-family: 'Mabiyet';
+}
+
+#name-input-section input#player-name {
+    padding: 8px;
+    font-size: 0.8em;
+    margin-right: 10px;
+
 }
 
 /* 6. 아이템 스폰 영역: 클릭 이벤트 감지 및 아이템 표시 */
