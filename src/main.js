@@ -35,7 +35,7 @@ let MAX_GAME_HEIGHT = FIXED_MAX_DEPTH;
 // 아이템 데이터
 const ITEMS = [
     { name: '산소통', class: 'oxygen-pouch', time_add: 2, rarity: 0.6 },
-    { name: '오리발 부스터', class: 'booster', time_add: 5, rarity: 0.3 },
+    { name: '오리발 부스터', class: 'booster', time_add: 3, rarity: 0.3 },
     { name: '행운의 불가사리', class: 'lucky-star', time_add: 8, rarity: 0.1 }
 ];
 const ITEM_SPAWN_INTERVAL = 3000;
@@ -109,7 +109,6 @@ function initializeGame() {
     requestAnimationFrame(applyPhysics);
     requestAnimationFrame(animateItems);
 
-    showHint();
 }
 
 // --- 게임 루프 ---
@@ -168,26 +167,6 @@ function updateUI() {
     altitudeValue.textContent = `${calculatedAltitude} m`;
 }
 
-function showHint() {
-    // 안내 문구 엘리먼트 생성
-    const hint = document.createElement('div');
-    hint.textContent = "클릭해서 헤엄쳐보자!";
-    hint.style.classList = 'hint-message';
-
-    // 게임 컨테이너에 추가
-    if (gameContainer) gameContainer.appendChild(hint);
-
-    // 3초 후에 사라지도록
-    setTimeout(() => {
-        hint.remove();
-    }, 3000);
-}
-
-// 게임 시작 시 호출
-window.addEventListener('load', () => {
-    showHint();
-});
-
 
 // --- 배경 스크롤 ---
 function updateBackgroundScroll() {
@@ -196,16 +175,83 @@ function updateBackgroundScroll() {
 }
 
 // --- 게임 종료 ---
+function triggerHiddenEnding() {
+    if (!gameContainer) return;
+
+    // 흰색 배경 div
+    const whiteDiv = document.createElement('div');
+    whiteDiv.classList.add('hidden-white');
+    gameContainer.appendChild(whiteDiv);
+
+    // 흰색 div 페이드인
+    requestAnimationFrame(() => whiteDiv.classList.add('fade-in'));
+
+    // 1초 후 바다 이미지 등장
+    setTimeout(() => {
+        const oceanImg = document.createElement('img');
+        oceanImg.src = 'assets/ocean-end.png';
+        oceanImg.classList.add('hidden-ocean');
+        gameContainer.appendChild(oceanImg);
+
+        requestAnimationFrame(() => {
+            whiteDiv.classList.remove('fade-in');
+            oceanImg.classList.add('fade-in');
+        });
+
+        // 2.5초 뒤 히든 엔딩 메시지
+        setTimeout(() => {
+            if (endMessage) {
+                endMessage.textContent = "✨ HIDDEN ENDING! 바다 위 세상에 도달했습니다! ✨";
+                endMessage.style.opacity = '1'; // fade-in 유지
+                endMessage.style.display = 'block';
+            }
+            if (nameInputSection) {
+                nameInputSection.classList.remove('hidden');
+            }
+        }, 2500);
+
+    }, 1000);
+}
+
+if (submitNameButton) {
+    submitNameButton.addEventListener('click', () => {
+        const name = playerNameInput.value.trim();
+        if (!name) return;
+
+        const score = Math.round(scrollPosition / MAX_GAME_HEIGHT * FIXED_MAX_DEPTH);
+
+        // Firebase 저장
+        saveScoreFirebase(name, score);
+
+        // 화면 표시
+        displayPlayerName(name, score);
+
+        // 입력창 숨기기
+        playerNameInput.value = '';
+        if (nameInputSection) nameInputSection.style.display = 'none';
+    });
+}
+
 function gameOver(message, isWin = false) {
     isGameRunning = false;
+
+    if (isWin) {
+        if (gameEndScreen) gameEndScreen.classList.add('hidden');
+        triggerHiddenEnding();
+        return;
+    }
+
     if (gameEndScreen) gameEndScreen.classList.remove('hidden');
+
+    // 일반 종료
     if (endMessage) endMessage.textContent = message;
     if (finalScore) {
-        let finalAltitude = Math.round(scrollPosition / MAX_GAME_HEIGHT * FIXED_MAX_DEPTH);
+        let finalAltitude = -Math.round(scrollPosition / MAX_GAME_HEIGHT * FIXED_MAX_DEPTH);
         finalScore.textContent = `최종 고도: ${finalAltitude} m / 클릭: ${clickCount.toLocaleString()}회`;
     }
     if (nameInputSection) nameInputSection.style.display = 'block';
 }
+
 
 // --- 아이템 ---
 function spawnItem() {
@@ -286,9 +332,15 @@ function displayPlayerName(name, score) {
     el.textContent = name;
     el.style.position = 'absolute';
     el.style.left = `${Math.random() * 80 + 10}%`;
-    el.style.bottom = `${score / FIXED_MAX_DEPTH * 100}%`;
-    gameContainer.appendChild(el);
+    oceanScroll.appendChild(el);
     playerElements[name] = el;
+
+    const bottomPercentage = (1 - (score / FIXED_MAX_DEPTH)) * 100;
+    const bottomPixels = Math.round(score * 1); // 1미터당 1픽셀 매핑 가정
+    // 0m 아래로 내려가지 않도록 0% 이상으로 제한
+    // bottomPercentage는 이제 oceanScroll의 10984px 높이에 대한 상대 위치가 됩니다.
+    el.style.bottom = `${bottomPixels}px`;
+
 }
 
 // --- 명예의 전당 실시간 표시 ---
