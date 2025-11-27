@@ -6,14 +6,15 @@ import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/fi
 const firebaseConfig = {
     apiKey: "AIzaSyA76Bhz4t6DiQG04GipuNIQcJ-zOn2pYrk",
     authDomain: "escapeocean-b0156.firebaseapp.com",
+    databaseURL: "https://escapeocean-b0156-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "escapeocean-b0156",
-    storageBucket: "escapeocean-b0156.firebasestorage.app",
+    storageBucket: "escapeocean-b0156.appspot.com",
     messagingSenderId: "490435285158",
     appId: "1:490435285158:web:c69fef4b33bca5479ee467",
     measurementId: "G-V8WPWNMHQD"
 };
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app, "https://escapeocean-b0156-default-rtdb.asia-southeast1.firebasedatabase.app");
+const db = getDatabase(app);
 
 // === 상태 변수 ===
 let isGameRunning = false;
