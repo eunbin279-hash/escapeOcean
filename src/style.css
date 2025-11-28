@@ -323,7 +323,7 @@ button {
 
 .hidden-ocean {
     object-fit: cover;
-    z-index: 10000;
+    z-index: 10;
 }
 
 .hidden-end-message {
@@ -339,4 +339,9 @@ button {
 /* JS에서 fade-in class 부여 시 적용 */
 .fade-in {
     opacity: 1;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
 }
