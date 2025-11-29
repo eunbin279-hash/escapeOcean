@@ -70,6 +70,8 @@ window.addEventListener('load', () => {
 
     if (gameContainer) {
         gameContainer.addEventListener('click', handleAscent);
+        gameContainer.addEventListener('touchstart', handleAscent);
+
     }
     if (submitNameButton) submitNameButton.addEventListener('click', onSubmitName);
     if (restartButton) restartButton.addEventListener('click', initializeGame);
