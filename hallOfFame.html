@@ -61,7 +61,7 @@
             <tr>
                 <th>순위</th>
                 <th>이름</th>
-                <th>점수</th>
+                <th>클릭 수</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -93,6 +93,7 @@
         // 실시간 명예의 전당
         onValue(scoresRef, snapshot => {
             const data = snapshot.val();
+
             if (!data) return;
 
             const entries = Object.values(data)
@@ -108,7 +109,6 @@
         });
     </script>
 
-    <script type="module" src="./src/main.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 // Firebase 초기화
 const firebaseConfig = {
@@ -66,9 +66,10 @@ window.addEventListener('load', () => {
     nameInputSection = document.getElementById('name-input-section');
     oceanImage = document.getElementById('ocean-image');
 
+    loadScores();
+
     if (gameContainer) {
         gameContainer.addEventListener('click', handleAscent);
-        gameContainer.addEventListener('touchstart', handleAscent);
     }
     if (submitNameButton) submitNameButton.addEventListener('click', onSubmitName);
     if (restartButton) restartButton.addEventListener('click', initializeGame);
@@ -84,6 +85,12 @@ window.addEventListener('load', () => {
 function initializeGame() {
     // 기존 히든엔딩/오버레이 제거
     document.querySelectorAll('.hidden-white, .hidden-ocean').forEach(el => el.remove());
+
+    if (nameInputSection) {
+        nameInputSection.style.display = 'none';
+        nameInputSection.style.zIndex = 0;             // ★ 초기화
+        nameInputSection.style.pointerEvents = 'auto'; // ★ 초기화
+    }
 
     isGameRunning = true;
     gameTimer = MAX_TIME;
@@ -216,9 +223,11 @@ function triggerHiddenEnding() {
                 endMessage.style.display = 'block';
             }
             if (nameInputSection) {
-                nameInputSection.classList.remove('hidden');
-                nameInputSection.style.zIndex = 1002;
-                nameInputSection.style.pointerEvents = 'auto';
+                nameInputSection.style.display = 'block';      // display:block으로 강제
+                nameInputSection.classList.remove('hidden');   // 기존 hidden 클래스 제거
+                nameInputSection.style.zIndex = 5000;          // 최상위로
+                nameInputSection.style.pointerEvents = 'auto'; // 클릭 가능
+                gameContainer.appendChild(nameInputSection);
             }
         }, 1500);
     }, 1000);
@@ -272,7 +281,7 @@ function onSubmitName() {
     const name = playerNameInput.value.trim();
     if (!name) return;
 
-    const score = Math.round(scrollPosition / MAX_GAME_HEIGHT * FIXED_MAX_DEPTH);
+    const score = clickCount;
     saveScoreFirebase(name, score);
 
     playerNameInput.value = '';
@@ -285,3 +294,31 @@ function saveScoreFirebase(name, score) {
     const newScoreRef = push(scoresRef);
     set(newScoreRef, { name, score, timestamp: Date.now() });
 }
+
+function loadScores() {
+    const scoreList = document.getElementById('score-list');
+    if (!scoreList) return; // 없으면 그냥 종료
+
+    const scoresRef = ref(db, 'scores');
+
+    onValue(scoresRef, snapshot => {
+        const data = snapshot.val();
+        if (!data) {
+            scoreList.innerHTML = "<li>아직 등록된 기록이 없습니다.</li>";
+            return;
+        }
+
+        // 객체 → 배열 변환
+        const arr = Object.values(data);
+
+        // 점수 높은 순 정렬
+        arr.sort((a, b) => b.score - a.score);
+
+        // 리스트 출력
+        scoreList.innerHTML = arr
+            .map(s => `<li>${s.name} — ${s.score}m</li>`)
+            .join("");
+    });
+}
+
+
