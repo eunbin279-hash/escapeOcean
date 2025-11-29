@@ -22,8 +22,8 @@ let clickCount = 0;
 let velocity = 0;
 
 // 물리 상수
-const GRAVITY = -0.3;
-const BUOYANCY = 9;
+const GRAVITY = -0.25;
+const BUOYANCY = 6;
 const MAX_VELOCITY = 40;
 
 // 게임 상수
@@ -34,7 +34,7 @@ let MAX_GAME_HEIGHT = FIXED_MAX_DEPTH;
 // 아이템
 const ITEMS = [
     { name: '산소통', class: 'oxygen-pouch', time_add: 2, rarity: 0.4 },
-    { name: '오리발 부스터', class: 'booster', time_add: 3, rarity: 0.2 },
+    { name: '오리발 부스터', class: 'booster', time_add: 3, rarity: 0.1 },
     { name: '행운의 불가사리', class: 'lucky-star', time_add: 8, rarity: 0.05 }
 ];
 const ITEM_SPAWN_INTERVAL = 3000;
