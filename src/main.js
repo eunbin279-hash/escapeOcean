@@ -69,7 +69,6 @@ window.addEventListener('load', () => {
     loadScores();
 
     if (gameContainer) {
-        gameContainer.addEventListener('click', handleAscent);
         gameContainer.addEventListener('touchstart', handleAscent);
 
     }
@@ -128,19 +127,36 @@ function gameLoop() {
 }
 
 // --- 물리 ---
+
+const VICTORY_THRESHOLD = MAX_GAME_HEIGHT - 1;
+
+
 function applyPhysics() {
     if (!isGameRunning) return;
 
+    // 1. 속도 적용 (중력) 및 속도 제한
     velocity += GRAVITY;
     velocity = Math.max(Math.min(velocity, MAX_VELOCITY), -MAX_VELOCITY);
 
+    // 2. 위치 업데이트
     scrollPosition += velocity;
-    scrollPosition = Math.max(0, Math.min(scrollPosition, MAX_GAME_HEIGHT));
 
-    if (scrollPosition >= MAX_GAME_HEIGHT) {
-        gameOver("✨ HIDDEN ENDING! 수면 위로 떠올랐습니다! ✨", true);
-        return;
+    if (scrollPosition >= VICTORY_THRESHOLD) {
+        // 1. 엔딩 트리거: MAX_GAME_HEIGHT에 도달했거나, 임계치를 넘었을 때 승리 발동
+        if (isGameRunning) {
+            isGameRunning = false;
+            scrollPosition = MAX_GAME_HEIGHT; // 최종 위치는 무조건 끝으로 고정
+            triggerHiddenEnding();
+            return;
+        }
     }
+
+    // 2. 바닥 제한 (승리 조건 충족 후 실행)
+    if (scrollPosition < 0) {
+        scrollPosition = 0;
+        velocity = 0;
+    }
+
 
     updateBackgroundScroll();
     updateUI();
@@ -168,6 +184,16 @@ function updateUI() {
     let alt = Math.round(-FIXED_MAX_DEPTH * (1 - scrollRatio));
     if (alt >= 0) alt = 0;
     altitudeValue.textContent = `${alt} m`;
+
+    let calculatedAltitude = Math.round(-FIXED_MAX_DEPTH + scrollPosition);
+
+    // ✨ 핵심 수정 2: calculatedAltitude가 0m에 근접하면 무조건 0으로 확정
+    if (calculatedAltitude >= -10 && calculatedAltitude <= 0) {
+        // 고도가 -10m 이하일 때 0m로 표시하여 미세 오차를 무시
+        calculatedAltitude = 0;
+    }
+
+    altitudeValue.textContent = `${calculatedAltitude} m`;
 }
 
 // --- 배경 스크롤 ---
@@ -229,7 +255,6 @@ function triggerHiddenEnding() {
                 nameInputSection.classList.remove('hidden');   // 기존 hidden 클래스 제거
                 nameInputSection.style.zIndex = 5000;          // 최상위로
                 nameInputSection.style.pointerEvents = 'auto'; // 클릭 가능
-                gameContainer.appendChild(nameInputSection);
             }
         }, 1500);
     }, 1000);
