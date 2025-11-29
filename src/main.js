@@ -316,7 +316,7 @@ function loadScores() {
 
         // 리스트 출력
         scoreList.innerHTML = arr
-            .map(s => `<li>${s.name} — ${s.score}m</li>`)
+            .map(s => `<li>${s.name} — ${s.score}회</li>`)
             .join("");
     });
 }
